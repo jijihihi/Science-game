@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>오가노이드 결과</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            width: 80%;
+            max-width: 1200px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar {
+            width: 250px;
+            background: #eee;
+            padding: 15px;
+            border-radius: 10px;
+        }
+
+        .sidebar h3 {
+            text-align: center;
+        }
+
+        .action-button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .action-button:hover {
+            background-color: #0056b3;
+        }
+
+        .result-container {
+            flex: 1;
+            text-align: center;
+        }
+
+        .organoid-image {
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+        }
+    </style>
+<body>
+
+    <div class="container">
+        <!-- 왼쪽 UI -->
+        <div class="sidebar">
+            <h3>행동 선택</h3>
+            <button class="action-button" onclick="applyEffect('exercise')">🏃 운동</button>
+            <button class="action-button" onclick="applyEffect('sugar')">🍭 단 음식 섭취</button>
+            <button class="action-button" onclick="applyEffect('caffeine')">☕ 카페인 섭취</button>
+            <button class="action-button" onclick="applyEffect('omega3')">🐟 오메가-3 섭취</button>
+            <button class="action-button" onclick="applyEffect('pollution')">🌫 공기 오염</button>
+            <button class="action-button" onclick="applyEffect('pesticide')">☠️ 농약 노출</button>
+            <button class="action-button" onclick="applyEffect('stress')">😟 스트레스</button>
+            <button class="action-button" onclick="applyEffect('probiotics')">🦠 프로바이오틱스</button>
+        </div>
+
+    <div class="container">
+        <div class="result-container">
+            <!-- 상단에 행동 횟수 표시 -->
+            <h2>당신의 가상 오가노이드 <span id="action-count">(0/10)</span></h2>
+            <p>나이: {{ age }}세</p>
+            <p>성별: {% if gender == "male" %}남성{% elif gender == "female" %}여성{% else %}기타{% endif %}</p>
+            <p>가족력: {% if history == "yes" %}있음{% else %}없음{% endif %}</p>
+
+            <img id="organoid-image" class="organoid-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfgYQ4qnCZba9AFnz9JVcl6rWTTQcr3wcOiw&s" alt="가상 오가노이드">
+        </div>
+
+    </div>
+
+    <script>
+        // URL에서 파라미터 가져오기
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                age: params.get("age"),
+                gender: params.get("gender"),
+                history: params.get("history"),
+            };
+        }
+        
+        //function showResult() {
+           // const params = getQueryParams();
+            //let genderText = params.gender === "male" ? "남성" : (params.gender === "female" ? "여성" : "기타");
+            //let historyText = params.history === "yes" ? "있음" : "없음";
+
+            //let resultText = `나이: ${params.age}세, 성별: ${genderText}, 가족력: ${historyText}`;
+            //document.getElementById("result-text").innerText = resultText;
+        //}
+
+        //showResult();
+            
+        
+    </script>
+
+<script>
+
+    // 전역 변수로 선언 (초기 값 0)
+let actionCount = 0;
+const maxActions = 10;
+
+function applyEffect(action) {
+    if (actionCount >= maxActions) {
+        alert("더 이상 행동할 수 없습니다! (최대 10번)");
+        return;
+    }
+
+    actionCount++; // 행동 횟수 증가
+    console.log("현재 행동 횟수:", actionCount);
+
+    let actionCounter = document.getElementById("action-count");
+    if (actionCounter) {
+        actionCounter.innerText = `(${actionCount}/10)`;
+    } else {
+        console.error("오류: 'action-count' 요소를 찾을 수 없습니다.");
+    }
+
+    switch(action) {
+        case 'exercise':
+            alert("운동을 하면 신경 보호 효과가 생깁니다! 🏃‍♂️");
+            break;
+        case 'sugar':
+            alert("단 음식을 먹으면 신경 염증이 증가합니다. 🍭");
+            break;
+        case 'caffeine':
+            alert("카페인은 도파민 신경을 보호할 수 있습니다. ☕");
+            break;
+        case 'omega3':
+            alert("오메가-3는 신경 보호 효과가 있습니다! 🐟");
+            break;
+        case 'pollution':
+            alert("공기 오염에 노출되면 신경 염증이 증가합니다. 🌫");
+            break;
+        case 'pesticide':
+            alert("농약 노출은 신경 독성을 유발합니다. ☠️");
+            break;
+        case 'stress':
+            alert("스트레스는 도파민 신경을 손상시킬 수 있습니다. 😟");
+            break;
+        case 'probiotics':
+            alert("프로바이오틱스는 장-뇌 축을 조절합니다. 🦠");
+            break;
+    }
+}
+</script>
+
+</body>
+</html>
