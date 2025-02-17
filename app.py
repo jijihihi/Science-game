@@ -23,15 +23,21 @@ def process():
 def animation():
     return render_template('animation.html')
 
+@app.route('/differentiation')
+def differentiation():
+    # 필요하다면 쿼리 파라미터 받아서 활용 가능
+    age = request.args.get('age')
+    gender = request.args.get('gender')
+    history = request.args.get('history')
+    return render_template('differentiation.html', age=age, gender=gender, history=history)
+
+
 
 @app.route('/result')
 def result():
-    age = request.args.get('age', 'Unknown')  # URL에서 `age` 값 가져오기
-    gender = request.args.get('gender', 'Unknown')  # URL에서 `gender` 값 가져오기
-    history = request.args.get('history', 'Unknown')  # URL에서 `history` 값 가져오기
-
-    print(f"🔍 받은 데이터 - 나이: {age}, 성별: {gender}, 가족력: {history}")
-    
+    age = request.args.get('age', 'Unknown')
+    gender = request.args.get('gender', 'Unknown')
+    history = request.args.get('history', 'Unknown')
     return render_template('result.html', age=age, gender=gender, history=history)
 
 
