@@ -12,6 +12,7 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            margin: 0;
         }
 
         .container {
@@ -24,11 +25,13 @@
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
         }
 
+        /* 왼쪽 사이드바 */
         .sidebar {
             width: 250px;
             background: #eee;
             padding: 15px;
             border-radius: 10px;
+            margin-right: 20px;
         }
 
         .sidebar h3 {
@@ -52,6 +55,7 @@
             background-color: #0056b3;
         }
 
+        /* 오른쪽 결과 영역 */
         .result-container {
             flex: 1;
             text-align: center;
@@ -62,109 +66,288 @@
             max-width: 500px;
             border-radius: 10px;
         }
+
+        /* 뇌 상태 지표 영역 */
+        .stats-container {
+            margin-top: 20px;
+            text-align: left;
+            display: inline-block; /* 가로 중앙 정렬 위해 */
+        }
+        .stats-container h3 {
+            text-align: center;
+        }
+        .stats-item {
+            margin: 5px 0;
+        }
+        .stats-label {
+            display: inline-block;
+            width: 150px;
+            font-weight: bold;
+        }
+
+        /* 부모 컨테이너가 아닌, 전체 화면 기준으로 고정하려면 body에 position: relative; 추가해도 됨 */
+        body {
+            position: relative; /* 없으면 자동으로 static이지만, 필요하다면 추가 */
+        }   
+
+/* 뇌 상태 지표를 오른쪽 상단에 고정하는 스타일 */
+        .stats-floating {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+
+        width: 220px; /* 카드 너비 조절 */
+        background-color: #fff;
+        color: #333;
+
+        padding: 15px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+
+        font-size: 14px; /* 글자 크기 */
+        z-index: 999;    /* 다른 요소보다 위에 표시 */
+        }
+
+        .stats-floating h3 {
+        margin-top: 0;
+        margin-bottom: 10px;
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+        }
+
+        .stats-item {
+        margin: 5px 0;
+        line-height: 1.4;
+        }
+
+        .stats-label {
+        display: inline-block;
+        width: 110px; /* 라벨 너비 */
+        font-weight: bold;
+        color: #555;
+        }
+
+        .stats-floating span {
+        color: #111;
+        }   
+
+
+        
+
+
     </style>
+</head>
 <body>
 
-    <div class="container">
-        <!-- 왼쪽 UI -->
-        <div class="sidebar">
-            <h3>행동 선택</h3>
-            <button class="action-button" onclick="applyEffect('exercise')">🏃 운동</button>
-            <button class="action-button" onclick="applyEffect('sugar')">🍭 단 음식 섭취</button>
-            <button class="action-button" onclick="applyEffect('caffeine')">☕ 카페인 섭취</button>
-            <button class="action-button" onclick="applyEffect('omega3')">🐟 오메가-3 섭취</button>
-            <button class="action-button" onclick="applyEffect('pollution')">🌫 공기 오염</button>
-            <button class="action-button" onclick="applyEffect('pesticide')">☠️ 농약 노출</button>
-            <button class="action-button" onclick="applyEffect('stress')">😟 스트레스</button>
-            <button class="action-button" onclick="applyEffect('probiotics')">🦠 프로바이오틱스</button>
-        </div>
 
-    <div class="container">
-        <div class="result-container">
-            <!-- 상단에 행동 횟수 표시 -->
-            <h2>당신의 가상 오가노이드 <span id="action-count">(0/10)</span></h2>
-            <p>나이: {{ age }}세</p>
-            <p>성별: {% if gender == "male" %}남성{% elif gender == "female" %}여성{% else %}기타{% endif %}</p>
-            <p>가족력: {% if history == "yes" %}있음{% else %}없음{% endif %}</p>
 
-            <img id="organoid-image" class="organoid-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfgYQ4qnCZba9AFnz9JVcl6rWTTQcr3wcOiw&s" alt="가상 오가노이드">
-        </div>
-
+    <!-- 뇌 상태 지표 (오른쪽 상단 고정) -->
+    <div class="stats-floating">
+        <h3>뇌 상태 지표</h3>
+     <div class="stats-item">
+        <span class="stats-label">알파시누클레인 응집:</span>
+         <span id="alphaSynucleinValue"></span>
     </div>
 
-    <script>
-        // URL에서 파라미터 가져오기
-        function getQueryParams() {
-            const params = new URLSearchParams(window.location.search);
-            return {
-                age: params.get("age"),
-                gender: params.get("gender"),
-                history: params.get("history"),
-            };
-        }
-        
-        //function showResult() {
-           // const params = getQueryParams();
-            //let genderText = params.gender === "male" ? "남성" : (params.gender === "female" ? "여성" : "기타");
-            //let historyText = params.history === "yes" ? "있음" : "없음";
+    <div class="stats-item">
+        <span class="stats-label">신경염증:</span>
+        <span id="neuroInflammationValue"></span>
+     </div>
+    <div class="stats-item">
+        <span class="stats-label">활성산소:</span>
+        <span id="oxidativeStressValue"></span>
+    </div>
+    <div class="stats-item">
+        <span class="stats-label">도파민 신경세포:</span>
+        <span id="dopamineNeuronValue"></span>
+     </div>
+    </div>
 
-            //let resultText = `나이: ${params.age}세, 성별: ${genderText}, 가족력: ${historyText}`;
-            //document.getElementById("result-text").innerText = resultText;
-        //}
+<div class="container">
+    <!-- 왼쪽 UI: 행동 선택 버튼들 -->
+    <div class="sidebar">
+        <h3>행동 선택</h3>
+        <button class="action-button" onclick="applyEffect('exercise')">🏃 운동</button>
+        <button class="action-button" onclick="applyEffect('sugar')">🍭 단 음식 섭취</button>
+        <button class="action-button" onclick="applyEffect('caffeine')">☕ 카페인 섭취</button>
+        <button class="action-button" onclick="applyEffect('omega3')">🐟 오메가-3 섭취</button>
+        <button class="action-button" onclick="applyEffect('pollution')">🌫 공기 오염</button>
+        <button class="action-button" onclick="applyEffect('pesticide')">☠️ 농약 노출</button>
+        <button class="action-button" onclick="applyEffect('stress')">😟 스트레스</button>
+        <button class="action-button" onclick="applyEffect('probiotics')">🦠 프로바이오틱스</button>
+    </div>
 
-        //showResult();
-            
-        
-    </script>
+    <!-- 오른쪽: 결과 영역 -->
+    <div class="result-container">
+        <!-- 상단에 행동 횟수 표시 -->
+        <h2>당신의 가상 오가노이드 <span id="action-count">(0/10)</span></h2>
+
+        <!-- 설문조사 정보 표시 (Jinja나 JS로 표시 가능) -->
+        <p id="resultInfo"></p>
+
+        <!-- 오가노이드 이미지 -->
+        <img id="organoid-image" class="organoid-image" 
+             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfgYQ4qnCZba9AFnz9JVcl6rWTTQcr3wcOiw&s" 
+             alt="가상 오가노이드">
+
+    </div>
+</div>
 
 <script>
+// ------------------ 초기 설정 ------------------
 
-    // 전역 변수로 선언 (초기 값 0)
+// 행동 최대 횟수
 let actionCount = 0;
 const maxActions = 10;
 
+// 뇌 상태 지표 (초기값)
+const stats = {
+    alphaSynuclein: 10,      // 알파시누클레인 응집도
+    neuroInflammation: 10,   // 신경염증
+    oxidativeStress: 10,     // 활성산소
+    dopamineNeuron: 80       // 남은 도파민 신경세포(가령 100을 최대로 가정)
+};
+
+// URL 파라미터로 사용자 데이터 받기
+function getQueryParams() {
+    const params = new URLSearchParams(window.location.search);
+    return {
+        age: params.get("age"),      // 나이
+        gender: params.get("gender"),// 성별
+        history: params.get("history") // 가족력
+    };
+}
+
+// 페이지 로드 시 실행
+document.addEventListener("DOMContentLoaded", function() {
+    const userData = getQueryParams();
+    // 나이/성별/가족력에 따라 stats 조정
+    initStatsByUserData(userData);
+
+    // 사용자 정보 표시
+    document.getElementById("resultInfo").innerText = 
+        `나이: ${userData.age} / 성별: ${userData.gender} / 가족력: ${userData.history}`;
+
+    // 초기 상태 표시
+    updateStatsUI();
+});
+
+
+// ------------------ 사용자 정보에 따른 초기화 ------------------
+function initStatsByUserData(userData) {
+    // 나이가 많으면 알파시누클레인↑, 신경염증↑
+    let age = parseInt(userData.age) || 30;
+    if (age > 60) {
+        stats.alphaSynuclein += 10;
+        stats.neuroInflammation += 5;
+    } else if (age < 20) {
+        // 아주 젊으면 뇌 건강이 더 좋다 가정
+        stats.dopamineNeuron += 5; 
+    }
+
+    // 가족력 있으면 알파시누클레인↑
+    if (userData.history === "yes") {
+        stats.alphaSynuclein += 5;
+    }
+
+    // 성별(남성이라면 파킨슨 위험 조금 더 높게 가정) 
+    // 실제 의학적 근거와 다를 수 있으니 예시로만 :)
+    if (userData.gender === "male") {
+        stats.alphaSynuclein += 3;
+    }
+}
+
+// ------------------ 행동에 따른 효과 ------------------
 function applyEffect(action) {
     if (actionCount >= maxActions) {
         alert("더 이상 행동할 수 없습니다! (최대 10번)");
         return;
     }
 
-    actionCount++; // 행동 횟수 증가
-    console.log("현재 행동 횟수:", actionCount);
-
+    actionCount++;
     let actionCounter = document.getElementById("action-count");
     if (actionCounter) {
         actionCounter.innerText = `(${actionCount}/10)`;
-    } else {
-        console.error("오류: 'action-count' 요소를 찾을 수 없습니다.");
     }
 
     switch(action) {
         case 'exercise':
             alert("운동을 하면 신경 보호 효과가 생깁니다! 🏃‍♂️");
+            // 신경염증 감소, 활성산소 감소, 도파민 뉴런 보호
+            stats.neuroInflammation -= 2;
+            stats.oxidativeStress -= 1;
+            stats.dopamineNeuron += 2;
             break;
+
         case 'sugar':
             alert("단 음식을 먹으면 신경 염증이 증가합니다. 🍭");
+            // 신경염증↑, 활성산소↑
+            stats.neuroInflammation += 2;
+            stats.oxidativeStress += 1;
             break;
+
         case 'caffeine':
             alert("카페인은 도파민 신경을 보호할 수 있습니다. ☕");
+            // 도파민 뉴런 약간 보호, 활성산소 살짝 증가?
+            stats.dopamineNeuron += 1;
+            stats.oxidativeStress += 1;
             break;
+
         case 'omega3':
             alert("오메가-3는 신경 보호 효과가 있습니다! 🐟");
+            // 알파시누클레인 응집 감소, 신경염증↓
+            stats.alphaSynuclein -= 2;
+            stats.neuroInflammation -= 2;
             break;
+
         case 'pollution':
             alert("공기 오염에 노출되면 신경 염증이 증가합니다. 🌫");
+            stats.neuroInflammation += 3;
+            stats.oxidativeStress += 2;
             break;
+
         case 'pesticide':
             alert("농약 노출은 신경 독성을 유발합니다. ☠️");
+            // 알파시누클레인↑, 도파민 뉴런↓
+            stats.alphaSynuclein += 3;
+            stats.dopamineNeuron -= 3;
             break;
+
         case 'stress':
             alert("스트레스는 도파민 신경을 손상시킬 수 있습니다. 😟");
+            stats.dopamineNeuron -= 2;
+            stats.oxidativeStress += 2;
             break;
+
         case 'probiotics':
             alert("프로바이오틱스는 장-뇌 축을 조절합니다. 🦠");
+            // 신경염증 살짝 감소
+            stats.neuroInflammation -= 1;
             break;
     }
+
+    // 수치가 너무 내려가거나 올라가지 않도록 보정 (0~100 범위 예시)
+    clampStats();
+
+    // 업데이트 후 UI 갱신
+    updateStatsUI();
+}
+
+// ------------------ 통계 수치 보정 (0~100 사이로 제한) ------------------
+function clampStats() {
+    stats.alphaSynuclein = Math.max(0, Math.min(stats.alphaSynuclein, 100));
+    stats.neuroInflammation = Math.max(0, Math.min(stats.neuroInflammation, 100));
+    stats.oxidativeStress = Math.max(0, Math.min(stats.oxidativeStress, 100));
+    stats.dopamineNeuron = Math.max(0, Math.min(stats.dopamineNeuron, 100));
+}
+
+// ------------------ UI 업데이트 ------------------
+function updateStatsUI() {
+    document.getElementById("alphaSynucleinValue").innerText = stats.alphaSynuclein;
+    document.getElementById("neuroInflammationValue").innerText = stats.neuroInflammation;
+    document.getElementById("oxidativeStressValue").innerText = stats.oxidativeStress;
+    document.getElementById("dopamineNeuronValue").innerText = stats.dopamineNeuron;
 }
 </script>
 

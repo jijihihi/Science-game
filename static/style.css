@@ -1,0 +1,33 @@
+.animation-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100vh;
+}
+
+#animation-step {
+    width: 60%;
+    max-width: 400px;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#animation-text {
+    font-size: 1.5em;
+    margin: 10px 0;
+}
+
+#next-step {
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    background-color: #007BFF;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#next-step:hover {
+    background-color: #0056b3;
+}

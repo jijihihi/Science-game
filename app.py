@@ -15,6 +15,15 @@ def home():
 def survey():
     return render_template('survey.html')
 
+@app.route('/process')
+def process():
+    return render_template('process.html')
+
+@app.route('/animation')
+def animation():
+    return render_template('animation.html')
+
+
 @app.route('/result')
 def result():
     age = request.args.get('age', 'Unknown')  # URL에서 `age` 값 가져오기

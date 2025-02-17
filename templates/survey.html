@@ -61,12 +61,12 @@
                 <option value="no">없음</option>
             </select><br><br>
 
-            <button type="button" onclick="goToResult()">결과 보기</button>
+            <button type="button" onclick="goToProcess()">다음 단계</button>
         </form>
     </div>
 
     <script>
-        function goToResult() {
+        function goToProcess() {
             const age = document.getElementById("age").value;
             const gender = document.getElementById("gender").value;
             const history = document.getElementById("history").value;
@@ -76,13 +76,11 @@
                 return;
             }
 
-            // 입력한 데이터를 result.html로 넘김 (GET 방식)
-            window.location.href = `/result?age=${age}&gender=${gender}&history=${history}`;
-            }
-        
+            // ✅ process.html로 이동하면서 입력값 전달
+            window.location.href = `/process?age=${age}&gender=${gender}&history=${history}`;
+        }
     </script>
-
-    <a href="/result?age=25&gender=male&history=yes" class="start-button">결과 보기</a>
 
 </body>
 </html>
+
