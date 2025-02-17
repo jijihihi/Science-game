@@ -85,84 +85,9 @@
             font-weight: bold;
         }
 
-        /* 부모 컨테이너가 아닌, 전체 화면 기준으로 고정하려면 body에 position: relative; 추가해도 됨 */
-        body {
-            position: relative; /* 없으면 자동으로 static이지만, 필요하다면 추가 */
-        }   
-
-/* 뇌 상태 지표를 오른쪽 상단에 고정하는 스타일 */
-        .stats-floating {
-        position: absolute;
-        top: 20px;
-        right: 20px;
-
-        width: 220px; /* 카드 너비 조절 */
-        background-color: #fff;
-        color: #333;
-
-        padding: 15px;
-        border-radius: 10px;
-        box-shadow: 0 0 10px rgba(0,0,0,0.1);
-
-        font-size: 14px; /* 글자 크기 */
-        z-index: 999;    /* 다른 요소보다 위에 표시 */
-        }
-
-        .stats-floating h3 {
-        margin-top: 0;
-        margin-bottom: 10px;
-        text-align: center;
-        font-weight: bold;
-        font-size: 16px;
-        }
-
-        .stats-item {
-        margin: 5px 0;
-        line-height: 1.4;
-        }
-
-        .stats-label {
-        display: inline-block;
-        width: 110px; /* 라벨 너비 */
-        font-weight: bold;
-        color: #555;
-        }
-
-        .stats-floating span {
-        color: #111;
-        }   
-
-
-        
-
-
     </style>
 </head>
 <body>
-
-
-
-    <!-- 뇌 상태 지표 (오른쪽 상단 고정) -->
-    <div class="stats-floating">
-        <h3>뇌 상태 지표</h3>
-     <div class="stats-item">
-        <span class="stats-label">알파시누클레인 응집:</span>
-         <span id="alphaSynucleinValue"></span>
-    </div>
-
-    <div class="stats-item">
-        <span class="stats-label">신경염증:</span>
-        <span id="neuroInflammationValue"></span>
-     </div>
-    <div class="stats-item">
-        <span class="stats-label">활성산소:</span>
-        <span id="oxidativeStressValue"></span>
-    </div>
-    <div class="stats-item">
-        <span class="stats-label">도파민 신경세포:</span>
-        <span id="dopamineNeuronValue"></span>
-     </div>
-    </div>
 
 <div class="container">
     <!-- 왼쪽 UI: 행동 선택 버튼들 -->
@@ -191,6 +116,26 @@
              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfgYQ4qnCZba9AFnz9JVcl6rWTTQcr3wcOiw&s" 
              alt="가상 오가노이드">
 
+        <!-- 뇌 상태 지표 표시 -->
+        <div class="stats-container">
+            <h3>뇌 상태 지표</h3>
+            <div class="stats-item">
+                <span class="stats-label">알파시누클레인 응집:</span>
+                <span id="alphaSynucleinValue"></span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-label">신경염증:</span>
+                <span id="neuroInflammationValue"></span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-label">활성산소:</span>
+                <span id="oxidativeStressValue"></span>
+            </div>
+            <div class="stats-item">
+                <span class="stats-label">도파민 신경세포:</span>
+                <span id="dopamineNeuronValue"></span>
+            </div>
+        </div>
     </div>
 </div>
 
@@ -353,3 +298,4 @@ function updateStatsUI() {
 
 </body>
 </html>
+
