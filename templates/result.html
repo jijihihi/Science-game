@@ -1,209 +1,243 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>오가노이드 결과</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-
-        .container {
-            display: flex;
-            width: 80%;
-            max-width: 1200px;
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        /* 왼쪽 사이드바 */
-        .sidebar {
-            width: 250px;
-            background: #eee;
-            padding: 15px;
-            border-radius: 10px;
-            margin-right: 20px;
-        }
-
-        .sidebar h3 {
-            text-align: center;
-        }
-
-        .action-button {
-            display: block;
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .action-button:hover {
-            background-color: #0056b3;
-        }
-
-        /* 오른쪽 결과 영역 */
-        .result-container {
-            flex: 1;
-            text-align: center;
-        }
-
-        .organoid-image {
-            width: 80%;
-            max-width: 500px;
-            border-radius: 10px;
-        }
-
-        /* 뇌 상태 지표 영역 */
-        .stats-container {
-            margin-top: 20px;
-            text-align: left;
-            display: inline-block; /* 가로 중앙 정렬 위해 */
-        }
-        .stats-container h3 {
-            text-align: center;
-        }
-        .stats-item {
-            margin: 5px 0;
-        }
-        .stats-label {
-            display: inline-block;
-            width: 150px;
-            font-weight: bold;
-        }
-
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오가노이드 결과</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      display: flex;
+      width: 80%;
+      max-width: 1200px;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+    /* 왼쪽 사이드바 */
+    .sidebar {
+      width: 250px;
+      background: #eee;
+      padding: 15px;
+      border-radius: 10px;
+      margin-right: 20px;
+    }
+    .sidebar h3 {
+      text-align: center;
+    }
+    .action-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+    .action-button {
+      flex-grow: 1;
+      padding: 10px;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+    }
+    .action-button:hover {
+      background-color: #0056b3;
+    }
+    .info-icon {
+      font-size: 1.2em;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+    /* 오른쪽 결과 영역 */
+    .result-container {
+      flex: 1;
+      text-align: center;
+    }
+    .organoid-image {
+      width: 80%;
+      max-width: 500px;
+      border-radius: 10px;
+    }
+    /* 뇌 상태 지표 영역 */
+    .stats-container {
+      margin-top: 20px;
+      margin-left: 50px; /* 오른쪽으로 이동 */
+      text-align: left;
+      display: inline-block;
+    }
+    .stats-container h3 {
+      text-align: center;
+    }
+    .stats-item {
+      margin: 5px 0;
+    }
+    .stats-label {
+      display: inline-block;
+      width: 150px;
+      font-weight: bold;
+    }
+    #risk-container {
+      margin-top: 20px;
+      font-size: 1.2em;
+      font-weight: bold;
+    }
+  </style>
 </head>
 <body>
 
 <div class="container">
-    <!-- 왼쪽 UI: 행동 선택 버튼들 -->
-    <div class="sidebar">
-        <h3>행동 선택</h3>
-        <button class="action-button" onclick="applyEffect('exercise')">🏃 운동</button>
-        <button class="action-button" onclick="applyEffect('sugar')">🍭 단 음식 섭취</button>
-        <button class="action-button" onclick="applyEffect('caffeine')">☕ 카페인 섭취</button>
-        <button class="action-button" onclick="applyEffect('omega3')">🐟 오메가-3 섭취</button>
-        <button class="action-button" onclick="applyEffect('pollution')">🌫 공기 오염</button>
-        <button class="action-button" onclick="applyEffect('pesticide')">☠️ 농약 노출</button>
-        <button class="action-button" onclick="applyEffect('stress')">😟 스트레스</button>
-        <button class="action-button" onclick="applyEffect('probiotics')">🦠 프로바이오틱스</button>
+  <!-- 왼쪽 UI: 행동 선택 버튼들 -->
+  <div class="sidebar">
+    <h3>행동 선택</h3>
+    <div class="action-item">
+      <button class="action-button" onclick="applyEffect('exercise')">🏃 운동</button>
+      <span class="info-icon" onclick="showInfo('exercise')">ℹ️</span>
     </div>
-
-    <!-- 오른쪽: 결과 영역 -->
-    <div class="result-container">
-        <!-- 상단에 행동 횟수 표시 -->
-        <h2>당신의 가상 오가노이드 <span id="action-count">(0/10)</span></h2>
-
-        <!-- 설문조사 정보 표시 (Jinja나 JS로 표시 가능) -->
-        <p id="resultInfo"></p>
-
-        <!-- 오가노이드 이미지 -->
-        <img id="organoid-image" class="organoid-image" 
-             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfgYQ4qnCZba9AFnz9JVcl6rWTTQcr3wcOiw&s" 
-             alt="가상 오가노이드">
-
-        <!-- 뇌 상태 지표 표시 -->
-        <div class="stats-container">
-            <h3>뇌 상태 지표</h3>
-            <div class="stats-item">
-                <span class="stats-label">알파시누클레인 응집:</span>
-                <span id="alphaSynucleinValue"></span>
-            </div>
-            <div class="stats-item">
-                <span class="stats-label">신경염증:</span>
-                <span id="neuroInflammationValue"></span>
-            </div>
-            <div class="stats-item">
-                <span class="stats-label">활성산소:</span>
-                <span id="oxidativeStressValue"></span>
-            </div>
-            <div class="stats-item">
-                <span class="stats-label">도파민 신경세포:</span>
-                <span id="dopamineNeuronValue"></span>
-            </div>
-        </div>
+    <div class="action-item">
+      <button class="action-button" onclick="applyEffect('sugar')">🍭 단 음식 섭취</button>
+      <span class="info-icon" onclick="showInfo('sugar')">ℹ️</span>
     </div>
+    <div class="action-item">
+      <button class="action-button" onclick="applyEffect('caffeine')">☕ 카페인 섭취</button>
+      <span class="info-icon" onclick="showInfo('caffeine')">ℹ️</span>
+    </div>
+    <div class="action-item">
+      <button class="action-button" onclick="applyEffect('omega3')">🐟 오메가-3 섭취</button>
+      <span class="info-icon" onclick="showInfo('omega3')">ℹ️</span>
+    </div>
+    <div class="action-item">
+      <button class="action-button" onclick="applyEffect('pollution')">🌫 공기 오염</button>
+      <span class="info-icon" onclick="showInfo('pollution')">ℹ️</span>
+    </div>
+    <div class="action-item">
+      <button class="action-button" onclick="applyEffect('pesticide')">☠️ 농약 노출</button>
+      <span class="info-icon" onclick="showInfo('pesticide')">ℹ️</span>
+    </div>
+    <div class="action-item">
+      <button class="action-button" onclick="applyEffect('stress')">😟 스트레스</button>
+      <span class="info-icon" onclick="showInfo('stress')">ℹ️</span>
+    </div>
+    <div class="action-item">
+      <button class="action-button" onclick="applyEffect('probiotics')">🦠 프로바이오틱스</button>
+      <span class="info-icon" onclick="showInfo('probiotics')">ℹ️</span>
+    </div>
+    <div class="action-item">
+      <button class="action-button" onclick="applyEffect('vitaminE')">💊 비타민 E 섭취</button>
+      <span class="info-icon" onclick="showInfo('vitaminE')">ℹ️</span>
+    </div>
+    <div class="action-item">
+      <button class="action-button" onclick="applyEffect('happyImagination')">🌈 행복한 상상하기</button>
+      <span class="info-icon" onclick="showInfo('happyImagination')">ℹ️</span>
+    </div>
+  </div>
+
+  <!-- 오른쪽: 결과 영역 -->
+  <div class="result-container">
+    <!-- 상단에 행동 횟수 표시 -->
+    <h2>당신의 가상 오가노이드 <span id="action-count">(0/10)</span></h2>
+
+    <!-- 설문조사 정보 표시 -->
+    <p id="resultInfo"></p>
+
+    <!-- 오가노이드 이미지 -->
+    <img id="organoid-image" class="organoid-image" 
+         src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSfgYQ4qnCZba9AFnz9JVcl6rWTTQcr3wcOiw&s" 
+         alt="가상 오가노이드">
+
+    <!-- 뇌 상태 지표 표시 -->
+    <div class="stats-container">
+      <h3>뇌 상태 지표</h3>
+      <div class="stats-item">
+        <span class="stats-label">알파시누클레인 응집:</span>
+        <span id="alphaSynucleinValue"></span>
+      </div>
+      <div class="stats-item">
+        <span class="stats-label">신경염증:</span>
+        <span id="neuroInflammationValue"></span>
+      </div>
+      <div class="stats-item">
+        <span class="stats-label">활성산소:</span>
+        <span id="oxidativeStressValue"></span>
+      </div>
+      <div class="stats-item">
+        <span class="stats-label">도파민 신경세포:</span>
+        <span id="dopamineNeuronValue"></span>
+      </div>
+      <div class="stats-item">
+        <span class="stats-label">미토콘드리아 기능:</span>
+        <span id="mitochondriaValue"></span>
+      </div>
+      <div class="stats-item">
+        <span class="stats-label">신경 성장 인자:</span>
+        <span id="neurotrophicValue"></span>
+      </div>
+    </div>
+    <div id="risk-container"></div>
+  </div>
 </div>
 
 <script>
 // ------------------ 초기 설정 ------------------
-
-// 행동 최대 횟수
 let actionCount = 0;
 const maxActions = 10;
 
-// 뇌 상태 지표 (초기값)
+// 초기 뇌 상태 지표 (기본값)
 const stats = {
     alphaSynuclein: 10,      // 알파시누클레인 응집도
     neuroInflammation: 10,   // 신경염증
     oxidativeStress: 10,     // 활성산소
-    dopamineNeuron: 80       // 남은 도파민 신경세포(가령 100을 최대로 가정)
+    dopamineNeuron: 80,      // 도파민 신경세포 (최대 80)
+    mitochondria: 90,        // 미토콘드리아 기능
+    neurotrophic: 70         // 신경 성장 인자
 };
 
 // URL 파라미터로 사용자 데이터 받기
 function getQueryParams() {
     const params = new URLSearchParams(window.location.search);
     return {
-        age: params.get("age"),      // 나이
-        gender: params.get("gender"),// 성별
-        history: params.get("history") // 가족력
+        age: params.get("age"),
+        gender: params.get("gender"),
+        history: params.get("history")
     };
 }
 
 // 페이지 로드 시 실행
 document.addEventListener("DOMContentLoaded", function() {
     const userData = getQueryParams();
-    // 나이/성별/가족력에 따라 stats 조정
     initStatsByUserData(userData);
-
-    // 사용자 정보 표시
     document.getElementById("resultInfo").innerText = 
         `나이: ${userData.age} / 성별: ${userData.gender} / 가족력: ${userData.history}`;
-
-    // 초기 상태 표시
     updateStatsUI();
 });
 
-
-// ------------------ 사용자 정보에 따른 초기화 ------------------
+// 사용자 정보에 따른 초기 상태 조정
 function initStatsByUserData(userData) {
-    // 나이가 많으면 알파시누클레인↑, 신경염증↑
     let age = parseInt(userData.age) || 30;
     if (age > 60) {
         stats.alphaSynuclein += 10;
         stats.neuroInflammation += 5;
     } else if (age < 20) {
-        // 아주 젊으면 뇌 건강이 더 좋다 가정
         stats.dopamineNeuron += 5; 
     }
-
-    // 가족력 있으면 알파시누클레인↑
     if (userData.history === "yes") {
         stats.alphaSynuclein += 5;
     }
-
-    // 성별(남성이라면 파킨슨 위험 조금 더 높게 가정) 
-    // 실제 의학적 근거와 다를 수 있으니 예시로만 :)
     if (userData.gender === "male") {
         stats.alphaSynuclein += 3;
     }
 }
 
-// ------------------ 행동에 따른 효과 ------------------
+// 행동에 따른 효과 적용
 function applyEffect(action) {
     if (actionCount >= maxActions) {
         alert("더 이상 행동할 수 없습니다! (최대 10번)");
@@ -211,91 +245,154 @@ function applyEffect(action) {
     }
 
     actionCount++;
-    let actionCounter = document.getElementById("action-count");
-    if (actionCounter) {
-        actionCounter.innerText = `(${actionCount}/10)`;
-    }
+    document.getElementById("action-count").innerText = `(${actionCount}/10)`;
 
     switch(action) {
         case 'exercise':
-            alert("운동을 하면 신경 보호 효과가 생깁니다! 🏃‍♂️");
-            // 신경염증 감소, 활성산소 감소, 도파민 뉴런 보호
+            alert("운동은 신경 보호와 미토콘드리아 기능 향상에 도움이 됩니다! 🏃‍♂️");
             stats.neuroInflammation -= 2;
             stats.oxidativeStress -= 1;
             stats.dopamineNeuron += 2;
+            stats.mitochondria += 2;
+            stats.neurotrophic += 1;
             break;
-
         case 'sugar':
-            alert("단 음식을 먹으면 신경 염증이 증가합니다. 🍭");
-            // 신경염증↑, 활성산소↑
+            alert("단 음식을 먹으면 신경 염증과 활성산소가 증가합니다. 🍭");
             stats.neuroInflammation += 2;
             stats.oxidativeStress += 1;
+            stats.mitochondria -= 1;
             break;
-
         case 'caffeine':
-            alert("카페인은 도파민 신경을 보호할 수 있습니다. ☕");
-            // 도파민 뉴런 약간 보호, 활성산소 살짝 증가?
+            alert("카페인은 도파민 신경 보호에 도움을 줄 수 있습니다. ☕");
             stats.dopamineNeuron += 1;
             stats.oxidativeStress += 1;
             break;
-
         case 'omega3':
-            alert("오메가-3는 신경 보호 효과가 있습니다! 🐟");
-            // 알파시누클레인 응집 감소, 신경염증↓
+            alert("오메가-3는 염증 감소와 신경 보호 효과가 있습니다! 🐟");
             stats.alphaSynuclein -= 2;
             stats.neuroInflammation -= 2;
+            stats.mitochondria += 2;
+            stats.neurotrophic += 2;
             break;
-
         case 'pollution':
-            alert("공기 오염에 노출되면 신경 염증이 증가합니다. 🌫");
+            alert("공기 오염은 신경 염증과 미토콘드리아 기능 저하를 유발합니다. 🌫");
             stats.neuroInflammation += 3;
             stats.oxidativeStress += 2;
+            stats.mitochondria -= 2;
             break;
-
         case 'pesticide':
-            alert("농약 노출은 신경 독성을 유발합니다. ☠️");
-            // 알파시누클레인↑, 도파민 뉴런↓
+            alert("농약 노출은 뇌 독성을 증가시켜 파킨슨 위험을 높입니다. ☠️");
             stats.alphaSynuclein += 3;
             stats.dopamineNeuron -= 3;
+            stats.mitochondria -= 3;
             break;
-
         case 'stress':
-            alert("스트레스는 도파민 신경을 손상시킬 수 있습니다. 😟");
+            alert("스트레스는 도파민 뉴런과 미토콘드리아에 부정적인 영향을 줍니다. 😟");
             stats.dopamineNeuron -= 2;
             stats.oxidativeStress += 2;
+            stats.mitochondria -= 2;
+            stats.neurotrophic -= 1;
             break;
-
         case 'probiotics':
-            alert("프로바이오틱스는 장-뇌 축을 조절합니다. 🦠");
-            // 신경염증 살짝 감소
+            alert("프로바이오틱스는 장-뇌 축을 조절하여 염증을 줄여줍니다. 🦠");
             stats.neuroInflammation -= 1;
+            stats.neurotrophic += 1;
+            break;
+        case 'vitaminE':
+            alert("비타민 E는 항산화 작용으로 활성산소를 줄여 뇌를 보호합니다. 💊");
+            stats.oxidativeStress -= 3;
+            stats.alphaSynuclein -= 1;
+            stats.mitochondria += 1;
+            stats.neurotrophic += 1;
+            break;
+        case 'happyImagination':
+            alert("행복한 상상은 스트레스 완화와 긍정적 신경 화학물질 촉진에 도움을 줍니다. 🌈");
+            stats.neuroInflammation -= 2;
+            stats.dopamineNeuron += 2;
+            stats.mitochondria += 1;
+            stats.neurotrophic += 2;
             break;
     }
 
-    // 수치가 너무 내려가거나 올라가지 않도록 보정 (0~100 범위 예시)
     clampStats();
-
-    // 업데이트 후 UI 갱신
     updateStatsUI();
 }
 
-// ------------------ 통계 수치 보정 (0~100 사이로 제한) ------------------
+// 수치 보정 (0~100)
 function clampStats() {
     stats.alphaSynuclein = Math.max(0, Math.min(stats.alphaSynuclein, 100));
     stats.neuroInflammation = Math.max(0, Math.min(stats.neuroInflammation, 100));
     stats.oxidativeStress = Math.max(0, Math.min(stats.oxidativeStress, 100));
-    stats.dopamineNeuron = Math.max(0, Math.min(stats.dopamineNeuron, 100));
+    stats.dopamineNeuron = Math.max(0, Math.min(stats.dopamineNeuron, 80));
+    stats.mitochondria = Math.max(0, Math.min(stats.mitochondria, 100));
+    stats.neurotrophic = Math.max(0, Math.min(stats.neurotrophic, 100));
 }
 
-// ------------------ UI 업데이트 ------------------
+// UI 업데이트 및 파킨슨병 위험 계산
 function updateStatsUI() {
     document.getElementById("alphaSynucleinValue").innerText = stats.alphaSynuclein;
     document.getElementById("neuroInflammationValue").innerText = stats.neuroInflammation;
     document.getElementById("oxidativeStressValue").innerText = stats.oxidativeStress;
     document.getElementById("dopamineNeuronValue").innerText = stats.dopamineNeuron;
+    document.getElementById("mitochondriaValue").innerText = stats.mitochondria;
+    document.getElementById("neurotrophicValue").innerText = stats.neurotrophic;
+
+    // 모든 행동 후 파킨슨병 위험 계산 및 표시
+    if (actionCount >= maxActions) {
+        let risk = calculateRisk();
+        document.getElementById("risk-container").innerText = `파킨슨병 발병 확률: ${risk}%`;
+    }
+}
+
+// 파킨슨병 발병 위험 계산 (0~100%)
+function calculateRisk() {
+    let dopamineRisk = 100 - (stats.dopamineNeuron * 100 / 80);
+    let total = stats.alphaSynuclein + stats.neuroInflammation + stats.oxidativeStress + dopamineRisk + (100 - stats.mitochondria) + (100 - stats.neurotrophic);
+    let risk = Math.round(total / 6);
+    return Math.max(0, Math.min(risk, 100));
+}123
+
+// 정보 아이콘 클릭 시 간단한 설명 표시
+function showInfo(action) {
+    let message = "";
+    switch(action) {
+        case 'exercise':
+            message = "운동은 뇌 혈류를 증가시키고, 신경 보호 및 미토콘드리아 기능 향상에 도움을 줍니다.";
+            break;
+        case 'sugar':
+            message = "단 음식은 신경 염증과 활성산소 생성을 촉진하여 뇌 건강에 부정적 영향을 미칩니다.";
+            break;
+        case 'caffeine':
+            message = "카페인은 도파민 뉴런 보호에 도움을 줄 수 있으나, 과도하면 부작용이 있을 수 있습니다.";
+            break;
+        case 'omega3':
+            message = "오메가-3는 염증 감소와 신경 보호 효과를 통해 뇌 기능을 지원합니다.";
+            break;
+        case 'pollution':
+            message = "공기 오염은 신경 염증을 증가시키고 미토콘드리아 기능 저하를 초래합니다.";
+            break;
+        case 'pesticide':
+            message = "농약 노출은 뇌 독성을 유발해 파킨슨병 위험을 높일 수 있습니다.";
+            break;
+        case 'stress':
+            message = "스트레스는 도파민 뉴런 손상과 미토콘드리아 기능 저하를 유발합니다.";
+            break;
+        case 'probiotics':
+            message = "프로바이오틱스는 장-뇌 축을 조절해 신경 염증을 줄이고 뇌 건강을 지원합니다.";
+            break;
+        case 'vitaminE':
+            message = "비타민 E는 항산화 효과로 활성산소를 감소시키며 뇌를 보호합니다.";
+            break;
+        case 'happyImagination':
+            message = "행복한 상상은 스트레스를 완화하고 긍정적 신경 화학물질 분비를 촉진합니다.";
+            break;
+        default:
+            message = "이 행동이 뇌에 미치는 영향을 설명합니다.";
+            break;
+    }
+    alert(message);
 }
 </script>
 
 </body>
 </html>
-

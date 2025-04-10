@@ -3,287 +3,561 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>mDA 오가노이드 키우기 시뮬레이터</title>
+  <title>세포 키우기 게임</title>
+  
+  <!-- Chart.js 삭제됨 -->
+  
   <style>
+    /* 기본 스타일: 기본 시스템 폰트 사용 */
     body {
       font-family: sans-serif;
+      background: linear-gradient(135deg, #ffefd5, #ffe4e1);
+      margin: 0;
+      padding: 20px;
+      color: #333;
+    }
+    /* 제목 스타일 */
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2em;
+    }
+    
+    /* 컨테이너 스타일 */
+    .container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      background: rgba(255,255,255,0.9);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      max-width: 1200px;
+      margin: auto;
+    }
+    .left-container, .right-container {
+      flex: 1;
+      min-width: 300px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      margin: 20px;
+      gap: 20px;
     }
-    h2 {
-      margin-bottom: 10px;
-    }
-    .metrics, .controls, .notification {
-      border: 1px solid #ccc;
+    
+    /* 카드 스타일 */
+    .metrics, .controls, .notification, .cell-density, .conditions {
+      border: 1px solid #ffcccb;
       padding: 15px;
-      margin: 10px;
-      width: 90%;
-      max-width: 600px;
-      background-color: #f9f9f9;
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 2px 2px 8px rgba(255,192,203,0.3);
     }
-    .metrics h3, .controls h3 {
+    .controls h3, .conditions h3 {
       margin-top: 0;
+      font-size: 1.2em;
+      color: #d2691e;
     }
+    .conditions ul {
+      margin: 10px 0 0 20px;
+      padding: 0;
+      list-style: disc;
+    }
+    
+    /* 버튼 스타일: 귀엽고 동적인 효과 */
     button {
-      padding: 10px 15px;
+      padding: 12px 18px;
       margin: 5px;
       font-size: 16px;
       cursor: pointer;
       border: none;
-      background-color: #007BFF;
-      color: white;
-      border-radius: 5px;
+      background: #ff69b4;
+      color: #fff;
+      border-radius: 20px;
+      transition: transform 0.2s, background 0.3s;
     }
     button:hover {
-      background-color: #0056b3;
+      transform: scale(1.1);
+      background: #ff1493;
     }
-    .achievement {
-      margin-top: 20px;
-      font-size: 20px;
-      color: green;
-      font-weight: bold;
+    button:active {
+      transform: scale(0.9);
+    }
+    
+    /* 툴팁 아이콘 스타일: 귀여운 원형 */
+    .tooltip-icon {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background-color: #ff69b4;
+      color: white;
+      border-radius: 50%;
       text-align: center;
+      line-height: 20px;
+      font-size: 14px;
+      margin-left: 5px;
+      cursor: pointer;
+      position: relative;
     }
+    .tooltip-icon:hover::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: 125%;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.8);
+      color: #fff;
+      padding: 6px;
+      border-radius: 8px;
+      white-space: nowrap;
+      z-index: 10;
+      font-size: 14px;
+    }
+    
+    /* 세포 이미지 스타일: 귀엽게 튀는 애니메이션 */
+    .cell-density img {
+      width: 100%;
+      max-width: 300px;
+      height: auto;
+      border-radius: 10px;
+      border: 1px solid #ffcccb;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    
+    /* 모달 스타일 */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal-content {
+      background: #ff1493;
+      padding: 30px;
+      border-radius: 10px;
+      text-align: center;
+      color: white;
+      animation: popIn 0.5s ease-out;
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.7); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    
+    /* 아이패드 등 작은 화면에 맞춘 레이아웃 조정 */
+    @media only screen and (max-width: 600px) {
+
+      html {
+        font-size: 13px;
+      }
+      body {
+        margin: 5px;
+      }
+    
+      button {
+        font-size: 12px;
+        padding: 6px 10px;
+      }
+
+    
+      h2 {
+        font-size: 1.8em;
+      }
+      
+      .metrics, .controls, .cell-density, .notification, .conditions {
+        padding: 10px;
+      }
+
+      .container, .metrics, .controls, .conditions, .notification {
+        padding: 8px;
+        margin: 5px;
+      } 
+    }     
+    
   </style>
 </head>
 <body>
-  <h2>mDA 오가노이드 키우기 시뮬레이터</h2>
+  <!-- confetti 애니메이션을 위한 캔버스 -->
+  <canvas id="confettiCanvas"></canvas>
   
-  <div class="metrics">
-    <p>현재 Day: <span id="dayCounter">1</span></p>
-    <p>도파민 뉴런 생성 정도: <span id="dopamineScore">0</span></p>
-    <p>세포 생존률: <span id="cellSurvival">100</span>%</p>
-    <p>다른 세포 분화 정도: <span id="differentiationScore">0</span></p>
-    <p>세포 밀도: <span id="cellDensity">50</span></p>
-    <p>신경 네트워크 형성 정도: <span id="networkFormation">0</span></p>
-    <div id="achievement" class="achievement"></div>
-  </div>
-
-  <div class="controls">
-    <h3>화학물질 추가 (시간/농도 조건 반영)</h3>
-    <button id="btnN2B27">N2B27 추가</button>
-    <button id="btnSB">SB 431542 추가</button>
-    <button id="btnDM">dorsomorphin 추가</button>
-    <button id="btnPurm">Purmorphamine 추가</button>
-    <button id="btnCHIR">CHIR 99021 추가</button>
-  </div>
-
-  <div class="controls">
-    <h3>행동</h3>
-    <button id="btnMedia">Media 갈아주기</button>
-    <button id="btnSplit">Cell Splitting 하기</button>
-    <button id="btnNextDay">다음날로 넘기기</button>
-  </div>
+  <h2>세포 키우기 게임</h2>
   
-  <div class="notification" id="notification">
-    <p>실험 로그: 아직 특별한 이벤트가 없습니다.</p>
-  </div>
-
-  <script>
-    // 쿼리 파라미터 -> userData
-    function getQueryParams() {
-      const params = new URLSearchParams(window.location.search);
-      return {
-        age: params.get("age") || "Unknown",
-        gender: params.get("gender") || "Unknown",
-        history: params.get("history") || "Unknown",
-      };
-    }
-    const userData = getQueryParams();
-    console.log("userData:", userData);
-
-    // 초기 변수
-    let day = 1;
-    let dopamineScore = 0;
-    let cellSurvival = 100;
-    let differentiationScore = 0;
-    let cellDensity = 50;
-    let networkFormation = 0;
-
-    let achievementUnlocked = {
-      induction: false,
-      network: false,
-      final: false
-    };
-
-    const notificationEl = document.getElementById("notification");
+  <div class="container">
+    <!-- 왼쪽 영역 (게임 진행 관련 버튼 및 수치들) -->
+    <div class="left-container">
+      <div class="metrics">
+        <p>오늘은 <span id="dayCounter">1</span>일째!</p>
+        <p>도파민 세포: <span id="dopamineScore">0</span></p>
+        <p>세포 건강: <span id="cellSurvival">100</span>%</p>
+        <p>새로운 세포 친구: <span id="differentiationScore">0</span></p>
+        <p>신경 연결: <span id="networkFormation">0</span></p>
+        <p>미디어 오염: <span id="mediaContamination">0</span>%</p>
+      </div>
+      
+      <div class="controls">
+        <h3>마법의 물약 추가하기!</h3>
+        <div>
+          <button id="btnN2B27">N2B27 추가</button>
+          <span class="tooltip-icon" data-tooltip="세포가 건강하게 자라게 해주는 마법의 물약!">?</span>
+        </div>
+        <div>
+          <button id="btnSB">SB 431542 추가</button>
+          <span class="tooltip-icon" data-tooltip="도파민 세포를 쑥쑥 키워줘요!">?</span>
+        </div>
+        <div>
+          <button id="btnDM">dorsomorphin 추가</button>
+          <span class="tooltip-icon" data-tooltip="도파민 친구들이 더 많아져요!">?</span>
+        </div>
+        <div>
+          <button id="btnPurm">Purmorphamine 추가</button>
+          <span class="tooltip-icon" data-tooltip="신경 연결이 쭉쭉 늘어나요!">?</span>
+        </div>
+        <div>
+          <button id="btnCHIR">CHIR 99021 추가</button>
+          <span class="tooltip-icon" data-tooltip="세포가 힘을 내게 해주는 마법!">?</span>
+        </div>
+      </div>
+      
+      <div class="controls">
+        <h3>신나는 행동!</h3>
+        <button id="btnMedia">미디어 갈아주기</button>
+        <button id="btnSplit">세포 분열하기</button>
+        <button id="btnNextDay">다음 날로!</button>
+      </div>
+      
+    </div>
     
-    // 로그 메시지 함수
-    function notify(message) {
-      notificationEl.innerHTML = `<p>실험 로그: ${message}</p>`;
-    }
-
-    // 화면 업데이트
-    function updateDisplay() {
-      document.getElementById("dayCounter").innerText = day;
-      document.getElementById("dopamineScore").innerText = dopamineScore;
-      document.getElementById("cellSurvival").innerText = cellSurvival;
-      document.getElementById("differentiationScore").innerText = differentiationScore;
-      document.getElementById("cellDensity").innerText = cellDensity;
-      document.getElementById("networkFormation").innerText = networkFormation;
-
-      // 중간 업적, 최종 업적 체크 (생략된 로직 동일)
-      // ...
-    }
-
-    // result 페이지로 이동
-    function goToResultPage() {
-      // Flask 라우트 /result로 이동, 쿼리 파라미터로 전달
-      window.location.href = `/result?age=${userData.age}&gender=${userData.gender}&history=${userData.history}`;
-    }
-
-    // ---------------------------
-    // 이벤트 리스너 설정
-    // ---------------------------
-
-    // N2B27
-    document.getElementById("btnN2B27").addEventListener("click", function() {
-      const survivalEffect = 5 + Math.floor(Math.random() * 6);
-      const densityEffect = 3 + Math.floor(Math.random() * 4);
-      cellSurvival += survivalEffect;
-      cellDensity += densityEffect;
-      if(cellSurvival > 100) cellSurvival = 100;
-      if(cellDensity > 100) cellDensity = 100;
-      notify(`N2B27 추가: 생존률 +${survivalEffect}, 밀도 +${densityEffect}`);
-      updateDisplay();
-    });
-
-    // SB
-    document.getElementById("btnSB").addEventListener("click", function() {
-      let effect;
-      if(day <= 2) {
-        effect = 10 + Math.floor(Math.random() * 5);
-      } else {
-        effect = 5 + Math.floor(Math.random() * 3);
+    <!-- 오른쪽 영역 (세포 이미지, 이동조건 안내, 게임 로그) -->
+    <div class="right-container">
+      <!-- 세포 이미지 -->
+      <div class="cell-density">
+        <p>세포 모습:</p>
+        <img id="cellDensityImage" src="/static/images/cell_10.png" alt="세포 모습">
+      </div>
+      <!-- 다음 페이지 이동 조건 안내 박스 -->
+      <div class="conditions">
+        <h3>다음 페이지 이동 조건</h3>
+        <ul>
+          <li>13일 이상 진행</li>
+          <li>도파민 세포: 70 이상</li>
+          <li>세포 건강: 80 이상</li>
+          <li>새로운 세포 친구: 20 이하</li>
+          <li>신경 연결: 50 이상</li>
+        </ul>
+      </div>
+      <!-- 게임 로그: 매번 최신 로그만 표시 -->
+      <div class="notification" id="notification">
+        <p>게임 로그: 시작해볼까요?</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 성공 모달 (조건 달성 시 나타남) -->
+  <div id="successModal" class="modal">
+    <div class="modal-content">
+      <h2>우와! 성공했어요!</h2>
+      <p>귀여운 미니 브레인 세포가 완성되었어요!</p>
+    </div>
+  </div>
+  
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      let day = 1;
+      let dopamineScore = 0;
+      let cellSurvival = 100;
+      let differentiationScore = 0;
+      let cellDensity = 10;
+      let networkFormation = 0;
+      let mediaContamination = 0;
+      
+      let mediaReplacedToday = false;
+      let cellSplitDoneToday = false;
+      
+      function getQueryParams() {
+        const params = new URLSearchParams(window.location.search);
+        return {
+          age: params.get("age") || "Unknown",
+          gender: params.get("gender") || "Unknown",
+          history: params.get("history") || "Unknown"
+        };
       }
-      dopamineScore += effect;
-      const networkEffect = Math.floor(effect / 2) + Math.floor(Math.random() * 3);
-      networkFormation += networkEffect;
-      if(dopamineScore > 100) dopamineScore = 100;
-      if(networkFormation > 100) networkFormation = 100;
-      notify(`SB 431542 추가: 도파민 +${effect}, 네트워크 +${networkEffect}`);
-      updateDisplay();
-    });
-
-    // DM
-    document.getElementById("btnDM").addEventListener("click", function() {
-      let effect;
-      if(day <= 2) {
-        effect = 8 + Math.floor(Math.random() * 4);
-      } else {
-        effect = 4 + Math.floor(Math.random() * 3);
+      const userData = getQueryParams();
+      console.log("userData:", userData);
+      
+      function updateDisplay() {
+        document.getElementById("dayCounter").innerText = day;
+        document.getElementById("dopamineScore").innerText = dopamineScore;
+        document.getElementById("cellSurvival").innerText = cellSurvival;
+        document.getElementById("differentiationScore").innerText = differentiationScore;
+        document.getElementById("networkFormation").innerText = networkFormation;
+        document.getElementById("mediaContamination").innerText = mediaContamination;
+        updateCellDensityImage();
       }
-      dopamineScore += effect;
-      const networkEffect = Math.floor(effect / 2) + Math.floor(Math.random() * 2);
-      networkFormation += networkEffect;
-      if(dopamineScore > 100) dopamineScore = 100;
-      if(networkFormation > 100) networkFormation = 100;
-      notify(`dorsomorphin 추가: 도파민 +${effect}, 네트워크 +${networkEffect}`);
-      updateDisplay();
-    });
-
-    // Purm
-    document.getElementById("btnPurm").addEventListener("click", function() {
-      let effect;
-      if(day >= 2 && day <= 7) {
-        effect = 12 + Math.floor(Math.random() * 6);
-      } else {
-        effect = 5 + Math.floor(Math.random() * 4);
+      
+      function updateCellDensityImage() {
+        let imgSrc = "";
+        if(cellDensity < 15) { imgSrc = "/static/images/cell_10.png"; }
+        else if(cellDensity < 30) { imgSrc = "/static/images/cell_25.png"; }
+        else if(cellDensity < 57.5) { imgSrc = "/static/images/cell_50.png"; }
+        else if(cellDensity < 72.5) { imgSrc = "/static/images/cell_65.png"; }
+        else if(cellDensity < 87.5) { imgSrc = "/static/images/cell_80.png"; }
+        else { imgSrc = "/static/images/cell_95.png"; }
+        document.getElementById("cellDensityImage").src = imgSrc;
       }
-      dopamineScore += effect;
-      const networkEffect = (day >= 2 && day <= 7) ? (8 + Math.floor(Math.random() * 4)) : (4 + Math.floor(Math.random() * 3));
-      networkFormation += networkEffect;
-      if(dopamineScore > 100) dopamineScore = 100;
-      if(networkFormation > 100) networkFormation = 100;
-      notify(`Purmorphamine 추가: 도파민 +${effect}, 네트워크 +${networkEffect}`);
-      updateDisplay();
-    });
-
-    // CHIR
-    document.getElementById("btnCHIR").addEventListener("click", function() {
-      let effect;
-      if(day <= 7) {
-        effect = 10 + Math.floor(Math.random() * 5);
-      } else {
-        effect = 5 + Math.floor(Math.random() * 3);
+      
+      // notify() 함수: 항상 최신 로그만 표시
+      function notify(message) {
+        document.getElementById("notification").innerHTML = `<p>${message}</p>`;
       }
-      dopamineScore += effect;
-      const networkEffect = Math.floor(effect / 2) + Math.floor(Math.random() * 3);
-      networkFormation += networkEffect;
-      if(dopamineScore > 100) dopamineScore = 100;
-      if(networkFormation > 100) networkFormation = 100;
-      notify(`CHIR 99021 추가: 도파민 +${effect}, 네트워크 +${networkEffect}`);
-      updateDisplay();
-    });
-
-    // Media
-    document.getElementById("btnMedia").addEventListener("click", function() {
-      const survivalBoost = 10 + Math.floor(Math.random() * 6);
-      const diffReduction = 5 + Math.floor(Math.random() * 4);
-      const densityBoost = 2 + Math.floor(Math.random() * 3);
-      const networkBoost = 2 + Math.floor(Math.random() * 3);
-      cellSurvival += survivalBoost;
-      differentiationScore -= diffReduction;
-      cellDensity += densityBoost;
-      networkFormation += networkBoost;
-      if(cellSurvival > 100) cellSurvival = 100;
-      if(differentiationScore < 0) differentiationScore = 0;
-      if(cellDensity > 100) cellDensity = 100;
-      if(networkFormation > 100) networkFormation = 100;
-      notify(`Media 교체: 생존률 +${survivalBoost}, 분화 -${diffReduction}, 밀도 +${densityBoost}, 네트워크 +${networkBoost}`);
-      updateDisplay();
-    });
-
-    // Splitting
-    document.getElementById("btnSplit").addEventListener("click", function() {
-      const survivalBoost = 8 + Math.floor(Math.random() * 5);
-      const diffReduction = 10 + Math.floor(Math.random() * 6);
-      const densityBoost = 8 + Math.floor(Math.random() * 5);
-      const networkBoost = 5 + Math.floor(Math.random() * 4);
-      cellSurvival += survivalBoost;
-      differentiationScore -= diffReduction;
-      cellDensity += densityBoost;
-      networkFormation += networkBoost;
-      if(cellSurvival > 100) cellSurvival = 100;
-      if(differentiationScore < 0) differentiationScore = 0;
-      if(cellDensity > 100) cellDensity = 100;
-      if(networkFormation > 100) networkFormation = 100;
-      notify(`Cell Splitting: 생존률 +${survivalBoost}, 분화 -${diffReduction}, 밀도 +${densityBoost}, 네트워크 +${networkBoost}`);
-      updateDisplay();
-    });
-
-    // 다음날로 넘기기
-    document.getElementById("btnNextDay").addEventListener("click", function() {
-      day++;
-      const survivalDrop = 3 + Math.floor(Math.random() * 3);
-      const diffIncrease = 3 + Math.floor(Math.random() * 3);
-      const dopamineDrop = 2 + Math.floor(Math.random() * 3);
-      const densityIncrease = 5;
-      const networkIncrease = 4;
-      cellSurvival -= survivalDrop;
-      differentiationScore += diffIncrease;
-      dopamineScore -= dopamineDrop;
-      cellDensity += densityIncrease;
-      networkFormation += networkIncrease;
-      if(cellSurvival < 0) cellSurvival = 0;
-      if(dopamineScore < 0) dopamineScore = 0;
-      if(differentiationScore > 100) differentiationScore = 100;
-      if(cellDensity > 100) cellDensity = 100;
-      if(networkFormation > 100) networkFormation = 100;
-      notify(`하루 경과: 생존률 -${survivalDrop}, 분화 +${diffIncrease}, 도파민 -${dopamineDrop}, 밀도 +${densityIncrease}, 네트워크 +${networkIncrease}`);
-      updateDisplay();
-
-      // day가 20 초과하면 result 페이지로 이동
-      if(day > 20) {
-        goToResultPage();
+      
+      function isChemicalAllowed(chemical) {
+        if(day === 1) {
+          return (chemical === "N2B27" || chemical === "SB" || chemical === "DM" || chemical === "CHIR");
+        } else if(day >= 2 && day <= 7) {
+          return (chemical === "N2B27" || chemical === "SB" || chemical === "DM" || chemical === "CHIR" || chemical === "Purm");
+        } else if(day >= 8 && day <= 13) {
+          return (chemical === "N2B27" || chemical === "DM" || chemical === "Purm");
+        } else {
+          return true;
+        }
       }
+      
+      function startConfetti() {
+        const canvas = document.getElementById("confettiCanvas");
+        canvas.style.display = "block";
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        const confettiCount = 100;
+        const confetti = [];
+        for(let i = 0; i < confettiCount; i++){
+          confetti.push({
+            x: Math.random() * canvas.width,
+            y: Math.random() * canvas.height - canvas.height,
+            r: Math.random() * 6 + 2,
+            d: Math.random() * confettiCount,
+            color: "rgba(" + Math.floor(Math.random()*256) + "," + Math.floor(Math.random()*256) + "," + Math.floor(Math.random()*256) + ",0.8)",
+            tilt: Math.floor(Math.random() * 10) - 10,
+            tiltAngleIncremental: (Math.random() * 0.07) + 0.05,
+            tiltAngle: 0
+          });
+        }
+        function drawConfetti() {
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          confetti.forEach(c => {
+            ctx.beginPath();
+            ctx.lineWidth = c.r;
+            ctx.strokeStyle = c.color;
+            ctx.moveTo(c.x + c.tilt + c.r / 2, c.y);
+            ctx.lineTo(c.x + c.tilt, c.y + c.tilt + c.r / 2);
+            ctx.stroke();
+          });
+        }
+        function updateConfetti() {
+          confetti.forEach(c => {
+            c.tiltAngle += c.tiltAngleIncremental;
+            c.y += (Math.cos(0.5) + 3 + c.r / 2) / 2;
+            c.x += Math.sin(0.5);
+            c.tilt = Math.sin(c.tiltAngle) * 15;
+            if(c.y > canvas.height){
+              c.y = -10;
+            }
+          });
+        }
+        function loop() {
+          drawConfetti();
+          updateConfetti();
+          requestAnimationFrame(loop);
+        }
+        loop();
+        setTimeout(() => { canvas.style.display = "none"; }, 3000);
+      }
+      
+      function showSuccessModal() {
+        const modal = document.getElementById("successModal");
+        modal.style.display = "flex";
+        startConfetti();
+        setTimeout(function() {
+          window.location.href = `/result?age=${userData.age}&gender=${userData.gender}&history=${userData.history}`;
+        }, 3000);
+      }
+      
+      document.getElementById("btnN2B27").addEventListener("click", function() {
+        if(!isChemicalAllowed("N2B27")) {
+          differentiationScore += 5;
+          notify("N2B27은 지금 사용 안 돼요! 새로운 세포 친구가 생겼어요!");
+          updateDisplay();
+          return;
+        }
+        const survivalEffect = 5 + Math.floor(Math.random() * 6);
+        const densityEffect = 3 + Math.floor(Math.random() * 4);
+        cellSurvival += survivalEffect;
+        cellDensity += densityEffect;
+        if(cellSurvival > 100) cellSurvival = 100;
+        if(cellDensity > 100) cellDensity = 100;
+        notify("N2B27 추가: 세포 건강이 좋아졌어요!");
+        updateDisplay();
+      });
+      
+      document.getElementById("btnSB").addEventListener("click", function() {
+        if(!isChemicalAllowed("SB")) {
+          differentiationScore += 5;
+          notify("SB 431542은 지금 사용할 수 없어요!");
+          updateDisplay();
+          return;
+        }
+        let effect = (day <= 2) ? (10 + Math.floor(Math.random() * 5))
+                                : (5 + Math.floor(Math.random() * 3));
+        dopamineScore += effect;
+        const networkEffect = Math.floor(effect / 2) + Math.floor(Math.random() * 3);
+        networkFormation += networkEffect;
+        if(dopamineScore > 100) dopamineScore = 100;
+        if(networkFormation > 100) networkFormation = 100;
+        notify("SB 431542 추가: 도파민 세포가 늘어났어요!");
+        updateDisplay();
+      });
+      
+      document.getElementById("btnDM").addEventListener("click", function() {
+        if(!isChemicalAllowed("DM")) {
+          differentiationScore += 5;
+          notify("dorsomorphin은 지금 사용할 수 없어요!");
+          updateDisplay();
+          return;
+        }
+        let effect = (day <= 2) ? (8 + Math.floor(Math.random() * 4))
+                                : (4 + Math.floor(Math.random() * 3));
+        dopamineScore += effect;
+        const networkEffect = Math.floor(effect / 2) + Math.floor(Math.random() * 2);
+        networkFormation += networkEffect;
+        if(dopamineScore > 100) dopamineScore = 100;
+        if(networkFormation > 100) networkFormation = 100;
+        notify("dorsomorphin 추가: 도파민 세포가 생겼어요!");
+        updateDisplay();
+      });
+      
+      document.getElementById("btnPurm").addEventListener("click", function() {
+        if(!isChemicalAllowed("Purm")) {
+          differentiationScore += 5;
+          notify("Purmorphamine은 지금 사용할 수 없어요!");
+          updateDisplay();
+          return;
+        }
+        let effect = (day >= 2 && day <= 7) ? (12 + Math.floor(Math.random() * 6))
+                                            : (5 + Math.floor(Math.random() * 4));
+        dopamineScore += effect;
+        const networkEffect = (day >= 2 && day <= 7)
+                              ? (8 + Math.floor(Math.random() * 4))
+                              : (4 + Math.floor(Math.random() * 3));
+        networkFormation += networkEffect;
+        if(dopamineScore > 100) dopamineScore = 100;
+        if(networkFormation > 100) networkFormation = 100;
+        notify("Purmorphamine 추가: 신경 연결이 늘어났어요!");
+        updateDisplay();
+      });
+      
+      document.getElementById("btnCHIR").addEventListener("click", function() {
+        if(!isChemicalAllowed("CHIR")) {
+          differentiationScore += 5;
+          notify("CHIR 99021은 지금 사용할 수 없어요!");
+          updateDisplay();
+          return;
+        }
+        let effect = (day <= 7) ? (10 + Math.floor(Math.random() * 5))
+                                : (5 + Math.floor(Math.random() * 3));
+        dopamineScore += effect;
+        const networkEffect = Math.floor(effect / 2) + Math.floor(Math.random() * 3);
+        networkFormation += networkEffect;
+        if(dopamineScore > 100) dopamineScore = 100;
+        if(networkFormation > 100) networkFormation = 100;
+        notify("CHIR 99021 추가: 세포가 힘을 냈어요!");
+        updateDisplay();
+      });
+      
+      document.getElementById("btnMedia").addEventListener("click", function() {
+        mediaReplacedToday = true;
+        if(mediaContamination <= 60) {
+          cellSurvival -= 5;
+          notify("미디어 갈아줬더니, 세포가 약간 피곤해졌어요.");
+        } else {
+          mediaContamination = 0;
+          notify("미디어 갈아주니 세포가 신선해졌어요!");
+        }
+        updateDisplay();
+      });
+      
+      document.getElementById("btnSplit").addEventListener("click", function() {
+        cellSplitDoneToday = true;
+        const survivalBoost = 8 + Math.floor(Math.random() * 5);
+        const diffReduction = 10 + Math.floor(Math.random() * 6);
+        cellDensity -= 20;
+        if(cellDensity < 0) cellDensity = 0;
+        cellSurvival += survivalBoost;
+        differentiationScore -= diffReduction;
+        if(cellSurvival > 100) cellSurvival = 100;
+        if(differentiationScore < 0) differentiationScore = 0;
+        notify(`세포 분열! 세포 건강 +${survivalBoost}, 새로운 세포 친구 -${diffReduction}`);
+        updateDisplay();
+      });
+      
+      document.getElementById("btnNextDay").addEventListener("click", function() {
+        mediaReplacedToday = false;
+        cellSplitDoneToday = false;
+        day++;
+        const contaminationIncrease = 20 + Math.floor(Math.random() * 16);
+        mediaContamination += contaminationIncrease;
+        if(mediaContamination > 100) mediaContamination = 100;
+        if(!mediaReplacedToday && mediaContamination > 75) {
+          cellSurvival -= 10;
+          networkFormation -= 5;
+          if(cellSurvival < 0) cellSurvival = 0;
+          if(networkFormation < 0) networkFormation = 0;
+          notify("미디어 오염 때문에 세포가 조금 힘들어졌어요.");
+        }
+        const survivalDrop = 3 + Math.floor(Math.random() * 3);
+        const diffIncrease = 3 + Math.floor(Math.random() * 3);
+        const dopamineDrop = 2 + Math.floor(Math.random() * 3);
+        const networkIncrease = 4;
+        cellSurvival -= survivalDrop;
+        differentiationScore += diffIncrease;
+        dopamineScore -= dopamineDrop;
+        networkFormation += networkIncrease;
+        if(cellSurvival < 0) cellSurvival = 0;
+        if(dopamineScore < 0) dopamineScore = 0;
+        if(differentiationScore > 100) differentiationScore = 100;
+        if(networkFormation > 100) networkFormation = 100;
+        if(cellSurvival > 50 && mediaContamination < 50) {
+          cellDensity += 5 + Math.floor(Math.random() * 5);
+        } else {
+          cellDensity += 2;
+        }
+        if(cellDensity > 100) cellDensity = 100;
+        if(cellDensity >= 95 && !cellSplitDoneToday) {
+          differentiationScore += 10;
+          notify("세포가 너무 빽빽해요! 분열이 필요해요!");
+        }
+        updateDisplay();
+        checkEndConditions();
+      });
+      
+      function checkEndConditions() {
+        // 다음 페이지로 넘어가기 위한 조건:
+        // day >= 13, dopamineScore >= 70, cellSurvival >= 80,
+        // differentiationScore <= 20, networkFormation >= 50
+        if(day >= 13 && dopamineScore >= 70 && cellSurvival >= 80 && differentiationScore <= 20 && networkFormation >= 50) {
+          showSuccessModal();
+        }
+      }
+      
+      updateDisplay();
     });
-
-    // 초기 화면 업데이트
-    updateDisplay();
   </script>
 </body>
 </html>
-
