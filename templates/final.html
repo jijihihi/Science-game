@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>최종 결과 페이지</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    h1, h2, h3 {
+      margin-bottom: 1rem;
+      text-align: center;
+      color: #333;
+    }
+
+    .score-box {
+      background-color: #f0f8ff;
+      border: 1px solid #d8eaff;
+      padding: 1.5rem;
+      border-radius: 5px;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .score-box p {
+      margin: 0.6rem 0;
+      font-size: 1.1rem;
+    }
+
+    .risk-factors, .effects {
+      margin-bottom: 2rem;
+    }
+
+    .risk-factors ul, .effects ul {
+      list-style-type: disc;
+      padding-left: 1.3rem;
+      margin: 0.5rem 0;
+    }
+
+    .risk-factors li, .effects li {
+      margin: 0.4rem 0;
+      line-height: 1.4rem;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 제목 -->
+    <h1>과학적 설명</h1>
+
+    <!-- 미니 뇌 건강 점수와 파킨슨병 위험 확률 -->
+    <div class="score-box">
+      <p>
+        <strong>당신의 미니 뇌 건강 점수</strong>는 
+        <span id="brainScore" style="color: #007acc; font-weight: bold;">--</span> 점이며
+      </p>
+      <p>
+        <strong>파킨슨병 발병 확률</strong>은 
+        <span id="pdRisk" style="color: #e36b2a; font-weight: bold;">--</span>% 입니다.
+      </p>
+    </div>
+
+    <!-- 위험 요소 -->
+    <div class="risk-factors">
+      <h3>위험 요소</h3>
+      <ul id="riskList">
+        <!-- 동적으로 채워질 예정 -->
+      </ul>
+    </div>
+
+    <!-- 선택한 활동들이 미니 뇌에 미친 영향 -->
+    <div class="effects">
+      <h3>선택한 활동들이 미니 뇌에 미친 영향</h3>
+      <ul id="effectList">
+        <!-- 동적으로 채워질 예정 -->
+      </ul>
+    </div>
+
+    <!-- 추가 안내 등 -->
+    <div class="footer-note">
+      본 결과는 시뮬레이션된 데이터와 간단한 추정치에 기반합니다.
+    </div>
+  </div>
+
+  <script>
+    // URL 파라미터 읽어오기
+    const params = new URLSearchParams(window.location.search);
+    const brainScore = params.get("brainScore") || "0";
+    const pdRisk = params.get("pdRisk") || "0";
+    
+    // 위험 요소와 활동 영향은 콤마(,)로 구분된 문자열로 전달받는다고 가정
+    // 예: &risks=스트레스%20상승,영양%20부족&effects=운동(1):%20뇌혈류%20증가,영양(2):%20항산화%20강화
+    const risksStr = params.get("risks") || "";
+    const effectsStr = params.get("effects") || "";
+
+    // 화면에 표시
+    document.getElementById("brainScore").textContent = brainScore;
+    document.getElementById("pdRisk").textContent = pdRisk;
+
+    // 위험 요소를 리스트로 나누어 표시
+    const riskListElem = document.getElementById("riskList");
+    if (risksStr.trim() === "") {
+      // 만약 아무 내용이 없다면 기본 문구 출력
+      let li = document.createElement("li");
+      li.textContent = "주요 위험 요소가 발견되지 않았습니다.";
+      riskListElem.appendChild(li);
+    } else {
+      const riskItems = risksStr.split(",");
+      riskItems.forEach(risk => {
+        let li = document.createElement("li");
+        li.textContent = risk.trim();
+        riskListElem.appendChild(li);
+      });
+    }
+
+    // 활동들의 효과를 리스트로 나누어 표시 (예: "운동(1): 규칙적인 운동은 뇌혈류 개선" 식)
+    const effectListElem = document.getElementById("effectList");
+    if (effectsStr.trim() === "") {
+      let li = document.createElement("li");
+      li.textContent = "행동 기록이 없습니다.";
+      effectListElem.appendChild(li);
+    } else {
+      const effectItems = effectsStr.split(",");
+      effectItems.forEach(effect => {
+        let li = document.createElement("li");
+        li.textContent = effect.trim();
+        effectListElem.appendChild(li);
+      });
+    }
+  </script>
+</body>
+</html>
+
